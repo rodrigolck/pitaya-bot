@@ -193,30 +193,13 @@ func validateExpectations(expectations models.ExpectSpec, resp Response, store *
 func equals(lhs interface{}, rhs interface{}) bool {
 	t := reflect.TypeOf(lhs)
 
-	switch t.Kind() {
-	case reflect.String:
-		lhsVal := lhs.(string)
-		rhsVal, err := assertType(rhs, "string")
-		if err != nil {
-			return false
-		}
-
-		return lhsVal == rhsVal
-	case reflect.Int:
-		lhsVal := lhs.(int)
-		rhsVal, err := assertType(rhs, "int")
-		if err != nil {
-			return false
-		}
-
-		return lhsVal == rhsVal
-
-	default:
-		fmt.Printf("Unknown type %s\n", t.Kind().String())
+	_, err := assertType(rhs, t.Kind().String())
+	if err != nil {
 		return false
 	}
 
-	return false
+	return lhs == rhs
+
 }
 
 func storeData(storeSpec models.StoreSpec, store *storage, resp Response) error {
